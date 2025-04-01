@@ -84,19 +84,19 @@ services:
       KAFKA_GROUP_SHARE_PARTITION_MAX_RECORD_LOCKS: 100
       TZ: "Europe/Madrid"
 
-  schema-registry:
-    image: confluentinc/cp-schema-registry:${CP_VERSION}
-    container_name: schema-registry
-    depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
-    ports:
-      - "8081:8081"
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19092,kafka-3:19092
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+#  schema-registry:
+#    image: confluentinc/cp-schema-registry:${CP_VERSION}
+#    container_name: schema-registry
+#    depends_on:
+#      - kafka-1
+#      - kafka-2
+#      - kafka-3
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19092,kafka-3:19092
+#      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:${CP_VERSION}
@@ -105,13 +105,13 @@ services:
       - kafka-1
       - kafka-2
       - kafka-3
-      - schema-registry
+#      - schema-registry
     ports:
       - "9021:9021"
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka-1:19092,kafka-2:19092,kafka-3:19092
       CONTROL_CENTER_MODE_ENABLE: management
-      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+#      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       CONTROL_CENTER_REPLICATION_FACTOR: 1
       CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
