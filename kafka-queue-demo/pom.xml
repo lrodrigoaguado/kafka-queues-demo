@@ -12,8 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>23</maven.compiler.source>
-    <maven.compiler.target>23</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -83,6 +83,31 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+            <execution>
+              <id>run-producer</id>
+              <goals>
+                <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>io.confluent.csta.Producer</mainClass>
+              </configuration>
+            </execution>
+            <execution>
+              <id>run-consumer</id>
+              <goals>
+                <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>io.confluent.csta.SharedConsumer</mainClass>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
