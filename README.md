@@ -7,6 +7,9 @@ The code and/or instructions here available are NOT intended for production usag
 
 ## Setup
 
+### Prerequisites
+You will need an environment with docker, java and maven to execute the demo.
+
 Spin up your Kafka cluster by executing 
 
 ```bash
