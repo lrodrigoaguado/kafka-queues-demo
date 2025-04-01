@@ -37,7 +37,7 @@ public class Producer {
                     System.out.printf("Published record: %d into partition: %d, offset: %d\n", randomNumber, metadata.partition(), metadata.offset());
 
                     // Optional: Add a delay to slow down the output
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     // Handle the exception if the thread is interrupted
                     e.printStackTrace();

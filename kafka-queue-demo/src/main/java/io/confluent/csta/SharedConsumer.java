@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Random;
+
 
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -31,8 +33,10 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 public class SharedConsumer {
 
     private static final String SHARE_GROUP = "queues-demo-share-group";
+    private static final int RECORD_PROCESSING_TIME = 300;
 
     public static void main(String[] args) throws Exception {
+        Random random = new Random();
 
         Properties adminProperties = new Properties();
         adminProperties.setProperty("bootstrap.servers", "localhost:29092");
@@ -64,23 +68,25 @@ public class SharedConsumer {
             for (ConsumerRecord<String, String> record : records) {
                 int value = Integer.parseInt(record.value());
                 int deliveryCount = record.deliveryCount().get();
+                int ackType = random.nextInt(10);
+
                 String action = "";
 
-                if (value == 0) {
-                    Thread.sleep(Duration.ofMillis(500));
+                if (ackType == 0) {
+                    Thread.sleep(RECORD_PROCESSING_TIME);
                     consumer.acknowledge(record, AcknowledgeType.REJECT);
                     action = "REJECT ";
                 }
-                else  if (value <= deliveryCount){
+                else if (ackType <= 3){
                     //System.out.printf("Processing record with value %d\n", value);
-                    Thread.sleep(Duration.ofMillis(500));
-                    consumer.acknowledge(record, AcknowledgeType.ACCEPT);
-                    action = "ACCEPT ";
-                }
-                else {
-                    Thread.sleep(Duration.ofMillis(500));
+                    Thread.sleep(RECORD_PROCESSING_TIME);
                     consumer.acknowledge(record, AcknowledgeType.RELEASE);
                     action = "RELEASE";
+                }
+                else {
+                    Thread.sleep(RECORD_PROCESSING_TIME);
+                    consumer.acknowledge(record, AcknowledgeType.ACCEPT);
+                    action = "ACCEPT ";
                 }
 
                 System.out.println(String.format("| %01d        | %03d    | %01d     | %s  | %d              |", record.partition(), record.offset(), value, action, deliveryCount));
@@ -89,6 +95,7 @@ public class SharedConsumer {
             Map<TopicIdPartition, Optional<KafkaException>> syncResult = consumer.commitSync();
             System.out.println(syncResult);
             System.out.println("committed\n");
+            Thread.sleep(500);
         }
     }
 }
