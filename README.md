@@ -32,6 +32,12 @@ This command will create the "test-queues" topic in the cluster having 2 partiti
 
 ## Run Demo
 
+First of all, move to the project folder and build it with the command
+```bash
+cd kafka-queue-demo
+mvn clean compile package
+```
+
 To execute the Producer, run 
 ```bash
 mvn exec:java@run-producer
