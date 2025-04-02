@@ -19,13 +19,16 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class SharedConsumer {
 
+    private static final String BOOTSTRAP_SERVERS = "localhost:29092,localhost:39092,localhost:49092";
     private static final String SHARE_GROUP = "queues-demo-share-group";
+    private static final String MAX_POLL_RECORDS = "10";
+    private static final String TOPIC_NAME = "test-queues";
     private static final int RECORD_PROCESSING_TIME = 300;
 
     public static void main(String[] args) throws Exception {
         Random random = new Random();
 
-//        Código para forzar que los consumidores consuman el topic desde el principio
+//        Commented code to force consumers to fetch record from the beginning of the topic
 //        Properties adminProperties = new Properties();
 //        adminProperties.setProperty("bootstrap.servers", "localhost:29092");
 //
@@ -41,10 +44,11 @@ public class SharedConsumer {
 //        }
 
         Properties props = new Properties();
-        props.setProperty("bootstrap.servers", "localhost:29092");
+        props.setProperty("bootstrap.servers", BOOTSTRAP_SERVERS);
         props.setProperty("group.id", SHARE_GROUP);
+        props.setProperty("max.poll.records", MAX_POLL_RECORDS);
         KafkaShareConsumer<String, String> consumer = new KafkaShareConsumer<>(props, new StringDeserializer(), new StringDeserializer());
-        consumer.subscribe(Arrays.asList("test-queues"));
+        consumer.subscribe(Arrays.asList(TOPIC_NAME));
 
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));    // Return a batch of acquired records
@@ -65,7 +69,7 @@ public class SharedConsumer {
                     consumer.acknowledge(record, AcknowledgeType.REJECT);
                     action = "REJECT ";
                 }
-                else if (ackType <= 3){
+                else if (ackType <= 2){
                     Thread.sleep(RECORD_PROCESSING_TIME);
                     consumer.acknowledge(record, AcknowledgeType.RELEASE);
                     action = "RELEASE";
@@ -80,9 +84,8 @@ public class SharedConsumer {
             }
 
             Map<TopicIdPartition, Optional<KafkaException>> syncResult = consumer.commitSync();
-            System.out.println(syncResult);
-            System.out.println("committed\n");
-            Thread.sleep(500);
+//            System.out.println(syncResult);
+            System.out.println("ACKs committed\n");
         }
     }
 }

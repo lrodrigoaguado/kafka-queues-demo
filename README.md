@@ -77,6 +77,8 @@ The Consumer in the demo will REJECT 10% of the records, and mark as RELEASE 20%
 
 The Consumer processes each record every 300 milliseconds, so given that records are produced every 100 milliseconds AND some of the consumed records are acknowledged as RELEASE  you may need around four consumers (or more, depending on the random numbers generated!) to be able to consume all the incoming records. 
 
+For legibility purposes, each consumer will get a maximum of 10 records in each batch.
+
 
 
 
