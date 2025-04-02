@@ -78,7 +78,6 @@ public class SharedConsumer {
                     action = "REJECT ";
                 }
                 else if (ackType <= 3){
-                    //System.out.printf("Processing record with value %d\n", value);
                     Thread.sleep(RECORD_PROCESSING_TIME);
                     consumer.acknowledge(record, AcknowledgeType.RELEASE);
                     action = "RELEASE";
