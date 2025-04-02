@@ -2,32 +2,19 @@ package io.confluent.csta;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
 
-import org.apache.kafka.clients.admin.Admin;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AlterConfigOp;
-import org.apache.kafka.clients.admin.AlterConfigsOptions;
 //import org.apache.kafka.clients.admin.AlterShareGroupOffsetsResult;
-import org.apache.kafka.clients.admin.ConfigEntry;
-import org.apache.kafka.clients.admin.ConfigEntry.ConfigType;
-import org.apache.kafka.clients.admin.DescribeConfigsResult;
 import org.apache.kafka.clients.consumer.AcknowledgeType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaShareConsumer;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicIdPartition;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.config.ConfigResource;
-import org.apache.kafka.common.config.ConfigResource.Type;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class SharedConsumer {
@@ -38,19 +25,20 @@ public class SharedConsumer {
     public static void main(String[] args) throws Exception {
         Random random = new Random();
 
-        Properties adminProperties = new Properties();
-        adminProperties.setProperty("bootstrap.servers", "localhost:29092");
-
-        try (AdminClient client = AdminClient.create(adminProperties)) {
-            ConfigEntry entry = new ConfigEntry("share.auto.offset.reset", "earliest");
-            AlterConfigOp op = new AlterConfigOp(entry, AlterConfigOp.OpType.SET);
-
-            Map<ConfigResource, Collection<AlterConfigOp>> configs = new HashMap<>(1);
-            configs.put(new ConfigResource(ConfigResource.Type.GROUP, SHARE_GROUP), Arrays.asList(op));
-            try (Admin admin = AdminClient.create(adminProperties)) {
-                admin.incrementalAlterConfigs(configs).all().get();
-            }
-        }
+//        Código para forzar que los consumidores consuman el topic desde el principio
+//        Properties adminProperties = new Properties();
+//        adminProperties.setProperty("bootstrap.servers", "localhost:29092");
+//
+//        try (AdminClient client = AdminClient.create(adminProperties)) {
+//            ConfigEntry entry = new ConfigEntry("share.auto.offset.reset", "earliest");
+//            AlterConfigOp op = new AlterConfigOp(entry, AlterConfigOp.OpType.SET);
+//
+//            Map<ConfigResource, Collection<AlterConfigOp>> configs = new HashMap<>(1);
+//            configs.put(new ConfigResource(ConfigResource.Type.GROUP, SHARE_GROUP), Arrays.asList(op));
+//            try (Admin admin = AdminClient.create(adminProperties)) {
+//                admin.incrementalAlterConfigs(configs).all().get();
+//            }
+//        }
 
         Properties props = new Properties();
         props.setProperty("bootstrap.servers", "localhost:29092");
