@@ -12,7 +12,7 @@ The code and/or instructions here available are NOT intended for production usag
 
 You will need an environment with docker, java and maven to execute the demo.
 
-Spin up your Kafka cluster by executing 
+Spin up your Kafka cluster by executing
 
 ```bash
 docker compose up -d
@@ -27,7 +27,7 @@ If everything worked well, you have a cluster consisting of three Kafka brokers 
 Start by creating the topic in the cluster:
 
 ```bash
-docker exec kafka-1 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:19092 --create --topic test-queues --replication-factor 1 --partitions 2
+docker exec kafka-1 kafka-topics --bootstrap-server localhost:19092 --create --topic test-queues --replication-factor 1 --partitions 2
 ```
 
 This command will create the "test-queues" topic in the cluster having 2 partitions.
@@ -41,7 +41,7 @@ cd kafka-queue-demo
 mvn clean compile package
 ```
 
-To execute the Producer, run 
+To execute the Producer, run
 
 ```bash
 mvn exec:java@run-producer
@@ -55,7 +55,7 @@ Now open a new terminal and run:
 mvn exec:java@run-consumer
 ```
 
-and it will launch a Shared Consumer, belonging to the shared group "queues-demo-share-group". You can open as many terminals as you like and execute as many consumers as you want (theoretical limit according to https://cwiki.apache.org/confluence/display/KAFKA/KIP-932%3A+Queues+for+Kafka is 200). 
+and it will launch a Shared Consumer, belonging to the shared group "queues-demo-share-group". You can open as many terminals as you like and execute as many consumers as you want (theoretical limit according to https://cwiki.apache.org/confluence/display/KAFKA/KIP-932%3A+Queues+for+Kafka is 200).
 
 ## Considerations
 
@@ -69,18 +69,12 @@ In Shared Groups, Consumers have to acknowledge the processing of the messages, 
 
 - RELEASE: the message could not be processed due to some temporal failure
 
-- REJECT: the message could not be processed, and it will not be possible in the future. 
+- REJECT: the message could not be processed, and it will not be possible in the future.
 
 The Consumer in the demo will REJECT 10% of the records, and mark as RELEASE 20% of them, randomly.
 
 
 
-The Consumer processes each record every 300 milliseconds, so given that records are produced every 100 milliseconds AND some of the consumed records are acknowledged as RELEASE  you may need around four consumers (or more, depending on the random numbers generated!) to be able to consume all the incoming records. 
+The Consumer processes each record every 300 milliseconds, so given that records are produced every 100 milliseconds AND some of the consumed records are acknowledged as RELEASE  you may need around four consumers (or more, depending on the random numbers generated!) to be able to consume all the incoming records.
 
 For legibility purposes, each consumer will get a maximum of 10 records in each batch.
-
-
-
-
-
-

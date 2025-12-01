@@ -47,12 +47,13 @@ public class SharedConsumer {
         props.setProperty("bootstrap.servers", BOOTSTRAP_SERVERS);
         props.setProperty("group.id", SHARE_GROUP);
         props.setProperty("max.poll.records", MAX_POLL_RECORDS);
+        props.setProperty("share.acknowledgement.mode", "explicit");
         KafkaShareConsumer<String, String> consumer = new KafkaShareConsumer<>(props, new StringDeserializer(), new StringDeserializer());
         consumer.subscribe(Arrays.asList(TOPIC_NAME));
 
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));    // Return a batch of acquired records
-            
+
             System.out.printf("Processing batch of %d records\n", records.count());
             System.out.println("|PARTITION | OFFSET | VALUE | Status   | Delivery count |");
             System.out.println("|-------------------------------------------------------|");
@@ -84,7 +85,7 @@ public class SharedConsumer {
             }
 
             Map<TopicIdPartition, Optional<KafkaException>> syncResult = consumer.commitSync();
-//            System.out.println(syncResult);
+            // System.out.println(syncResult);
             System.out.println("ACKs committed\n");
         }
     }
